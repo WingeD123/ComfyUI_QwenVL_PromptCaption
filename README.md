@@ -70,7 +70,9 @@ Download Qwen 2.5/3 VL official repo from Hugging Face, then place it in `text_e
 从 Hugging Face 下载 Qwen 2.5/3 VL 官方仓库，直接放入 `text_encoders` 目录即可。
 
 https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct/tree/main
+
 https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct
+
 https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct
 
 国内也可从网盘下载：https://pan.quark.cn/s/b3975e789c3c
