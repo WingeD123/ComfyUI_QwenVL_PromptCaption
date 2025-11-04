@@ -73,6 +73,8 @@ https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct/tree/main
 https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct
 https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct
 
+国内也可从网盘下载：https://pan.quark.cn/s/b3975e789c3c
+
 ---
 
 ## 自定义提示词 | Custom Prompts
