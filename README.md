@@ -4,8 +4,8 @@ Leverages Qwen 2.5/3 VL for prompt inversion &amp; caption generation in ComfyUI
 ---
 
 ## 重要说明 | Important Note
-❌ 插件不自动下载模型，可复用 ComfyOrg 提供的 `qwen_2.5_vl_7b.safetensors`。  
-❌ This plugin does not auto-download models. It can reuse `qwen_2.5_vl_7b.safetensors` provided by ComfyOrg.
+❌ 插件不自动下载模型，可复用 ComfyOrg 提供的 `qwen_2.5_vl_7b.safetensors`，也可手动下载其它Qwen VL模型。  
+❌ This plugin does not auto-download models. It can reuse `qwen_2.5_vl_7b.safetensors` provided by ComfyOrg, or manually download other Qwen VL models.
 
 ---
 
