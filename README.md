@@ -87,7 +87,7 @@ Edit `prompts.txt` in the custom_nodes folder (follow the existing format):
 
 ---
 
-## 显存精度建议 | VRAM & Precision Recommendations
+## 模型精度建议 | VRAM & Precision Recommendations
 | 显存 (VRAM) | 推荐精度 (Recommended Precision) |
 |-------------|----------------------------------|
 | 6-8GB       | Qwen 2.5 VL 7B (4bit) / Qwen 3 VL 8B (4bit) / Qwen 3 VL 4B (8bit) |
