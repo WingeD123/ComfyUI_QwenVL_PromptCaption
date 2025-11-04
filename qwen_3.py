@@ -235,7 +235,7 @@ class Qwen3Caption:
         with torch.no_grad():
             generated_ids = self.model.generate(
             **inputs, 
-            max_new_tokens=256,  # 减少生成token数量（根据需求调整，反推提示词通常无需过长）
+            max_new_tokens=512,
             )
         # 解码并清理
         generated_ids_trimmed = [
@@ -307,9 +307,12 @@ class Qwen3CaptionBatch:
         # --- A. 模型加载/复用 (时间效率优化) ---
         cache_key = (model_dir, dtype)
         if cache_key not in QWEN_MODEL_CACHE:
-             #print(f"Qwen2.5 VL: 首次加载模型 {model_dir}...")
-             self.model, self.processor = load_qwen_components(model_dir, dtype)
-             QWEN_MODEL_CACHE[cache_key] = (self.model, self.processor)
+            #print(f"Qwen2.5 VL: 首次加载模型 {model_dir}...")
+            try:
+                self.model, self.processor = load_qwen_components(model_dir, dtype)
+            except Exception as e:
+                return {"ui": {"text": ("Failed to load model, 模型加载失败",)}, "result": ("Failed to load model, 模型加载失败",)} 
+            QWEN_MODEL_CACHE[cache_key] = (self.model, self.processor)
         else:
              self.model, self.processor = QWEN_MODEL_CACHE[cache_key]
 
@@ -373,7 +376,7 @@ class Qwen3CaptionBatch:
                 with torch.no_grad():
                     generated_ids = self.model.generate(
                         **inputs,
-                        max_new_tokens=256, 
+                        max_new_tokens=512, 
                     )
 
                 # 5.5 解码结果
@@ -395,7 +398,8 @@ class Qwen3CaptionBatch:
 
             except Exception as e:
                 continue
-
+        print("")
+        
         # --- 6. 显存清理 ---
         if not keep_model_loaded:
              del self.model, self.processor
