@@ -59,7 +59,7 @@ To reuse `qwen_2.5_vl_7b.safetensors`:
    将模型文件重命名为 `model.safetensors`并移入创建的文件夹  
 3. Add required config files (from Qwen 2.5 VL's official Hugging Face repo)  
    添加必要配置文件（取自 Qwen 2.5 VL 官方 Hugging Face 仓库）
-   https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct/tree/main
+   https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct
 <img width="834" height="345" alt="nodes2" src="https://github.com/user-attachments/assets/80f9f42c-a71e-45ca-9b88-9c9c5567508c" />
 
 ✅ No extra disk usage – model remains usable for ComfyUI's Qwen Image/Edit model.  
@@ -69,7 +69,7 @@ To reuse `qwen_2.5_vl_7b.safetensors`:
 Download Qwen 2.5/3 VL official repo from Hugging Face, then place it in `text_encoders`.  
 从 Hugging Face 下载 Qwen 2.5/3 VL 官方仓库，直接放入 `text_encoders` 目录即可。
 
-https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct/tree/main
+https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct
 
 https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct
 
