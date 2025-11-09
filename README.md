@@ -80,6 +80,8 @@ https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct
 ---
 
 ## 自定义提示词 | Custom Prompts
+Now you can input instruction directly, or  
+现在可以直接输入指令，或者
 Edit `prompts.txt` in the custom_nodes folder (follow the existing format):  
 修改插件目录下的 `prompts.txt` 文件（参考原有格式）：
 - Support multiple prompts  
