@@ -157,6 +157,9 @@ class Qwen3Caption:
                 "dtype": (["auto", "4bit", "8bit"], {"default": "auto"}), # 强烈建议默认 4bit
                 "keep_model_loaded": ("BOOLEAN", {"default": False}), # 默认保持加载
                 "max_side": ("INT", {"default": 512, "min": 256, "max": 2240, "step": 32}), # 默认安全尺寸
+                #"instruction": ("STRING", {"multiline": True}),
+            },
+            "optional": {
                 "instruction": ("STRING", {"multiline": True}),
             }
         }
