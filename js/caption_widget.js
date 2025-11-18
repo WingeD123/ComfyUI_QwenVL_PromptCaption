@@ -59,5 +59,5 @@ app.registerExtension({
 			};
 		}
 	},
-
 });
+
