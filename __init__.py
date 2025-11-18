@@ -6,7 +6,7 @@ from .string_to_bbox import StringToBbox
 # --- ComfyUI 映射 ---
 # ----------------------------------------------------------------------------------
 
-WEB_DIRECTORY = "./"
+WEB_DIRECTORY = "./js"
 
 NODE_CLASS_MAPPINGS = {
     "Qwen25Caption": Qwen25Caption,
