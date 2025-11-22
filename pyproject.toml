@@ -2,7 +2,7 @@
 [project]
 name = "ComfyUI_QwenVL_PromptCaption" # Unique identifier for your node. Immutable after creation.
 description = "Leverages Qwen 2.5/3 VL for prompt inversion & caption generation. No auto-download models(不会自动下载模型), see GitHub for how to use(GitHub有详细说明)."
-version = "0.5.0" # Custom Node version. Must be semantically versioned.
+version = "0.6.0" # Custom Node version. Must be semantically versioned.
 license = { file = "LICENSE" }
 dependencies  = ["transformers>=4.57.0", "accelerate", "bitsandbytes"] # Filled in from requirements.txt
 
@@ -14,4 +14,5 @@ PublisherId = "bunny-ai" # TODO (fill in Publisher ID from Comfy Registry Websit
 DisplayName = "ComfyUI_QwenVL_PromptCaption" # Display name for the Custom Node. Can be changed later.
 
 Icon = "" # SVG, PNG, JPG or GIF (MAX. 800x400px)
+
 
