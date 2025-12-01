@@ -18,6 +18,8 @@ Leverages Qwen 2.5/3 VL for prompt inversion &amp; caption generation in ComfyUI
    Qwen 3 VL Caption：单图提示词反推
 4. Qwen 3 VL Batch Caption: Batch image prompt inversion (folder input)  
    Qwen 3 VL Batch Caption：目录批量图片提示词反推
+5. Ovis 2.5 Run: Run Ovis 2.5 model  
+   Ovis 2.5 Run：运行 Ovis 2.5 模型
 <img width="1294" height="875" alt="nodes1" src="https://github.com/user-attachments/assets/be0e7a0d-906e-4630-b920-72fc7dfe598f" />
 
 ---
@@ -76,6 +78,11 @@ https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct
 https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct
 
 国内也可从网盘下载：https://pan.quark.cn/s/b3975e789c3c
+
+Support Ovis 2.5 models
+新支持 Ovis 2.5 模型
+https://huggingface.co/AIDC-AI/Ovis2.5-2B
+https://huggingface.co/AIDC-AI/Ovis2.5-9B
 
 ---
 
