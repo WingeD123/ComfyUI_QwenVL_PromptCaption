@@ -241,7 +241,7 @@ class Qwen25Caption:
         with torch.no_grad():
             generated_ids = self.model.generate(
             **inputs, 
-            max_new_tokens=512,
+            max_new_tokens=1024,
             )
         # 解码并清理
         generated_ids_trimmed = [
@@ -385,7 +385,7 @@ class Qwen25CaptionBatch:
                 with torch.no_grad():
                     generated_ids = self.model.generate(
                         **inputs,
-                        max_new_tokens=512, 
+                        max_new_tokens=1024, 
                     )
 
                 # 5.5 解码结果
