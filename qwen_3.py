@@ -291,6 +291,7 @@ class Qwen3CaptionBatch:
                 },
             "optional": {
                 "save_path": ("STRING", {"default": ""}),
+                "instruction": ("STRING", {"multiline": True}),
                 }
         }
     RETURN_TYPES = ("STRING",)
@@ -346,7 +347,15 @@ class Qwen3CaptionBatch:
         #else:
         #     text_prompt = "详细描述这张图片，使用中文"
         prompts_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts.txt")
-        text_prompt = load_prompt_from_file(prompts_file, lang)  # 自动返回多行文本
+        if not instruction or not instruction.strip():
+            text_prompt = load_prompt_from_file(prompts_file, lang)  # 自动返回多行文本
+        else:
+            if lang == "中文":
+                text_prompt = instruction + "，使用中文"
+            elif lang == "English":
+                text_prompt = instruction + ". Use English"
+            # elif lang == "bbox":
+                # text_prompt = instruction + "，返回它们的最小边界框坐标列表。结果必须是一个Python列表的列表，即 [[x1, y1, x2, y2], [x3, y3, x4, y4], ...] 格式。坐标要求：所有坐标值必须是整数。坐标是归一化的，范围是0到1000（表示 0% 到 100% 乘以 10）。每个边界框的顺序为：[左上角X, 左上角Y, 右下角X, 右下角Y]。示例输出：[[250, 150, 450, 500], [600, 700, 800, 950]]请仅输出这个列表结构，不包含任何解释性文字或代码块。"
         print(text_prompt)
         
         for img_file in image_files:
