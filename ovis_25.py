@@ -168,6 +168,7 @@ class Ovis25Run:
                 "lang": (["中文", "English", "bbox"], {"default": "中文"}),
                 "dtype": (["auto", "4bit", "8bit", "bf16"], {"default": "bf16"}), # 强烈建议默认 4bit
                 "keep_model_loaded": ("BOOLEAN", {"default": False}), # 默认保持加载
+                "thinking": ("BOOLEAN", {"default": True}), # enable_thinking
                 #"max_side": ("INT", {"default": 532, "min": 252, "max": 2240, "step": 28}), # 默认安全尺寸
                 "instruction": ("STRING", {"multiline": True}),
             },
@@ -182,7 +183,7 @@ class Ovis25Run:
     OUTPUT_NODE = True
 
 
-    def run(self, image: torch.Tensor, model_path: str, lang: str, dtype: str, keep_model_loaded: bool, instruction: str):
+    def run(self, image: torch.Tensor, model_path: str, lang: str, dtype: str, keep_model_loaded: bool, thinking: bool, instruction: str):
         
         if image is None:
             return {"ui": {"text": ("no image, 无图像",)}, "result": ("no image, 无图像",)} 
@@ -200,13 +201,6 @@ class Ovis25Run:
             QWEN_MODEL_CACHE[cache_key] = (self.model, None)
         else:
             self.model, _ = QWEN_MODEL_CACHE[cache_key]
-        
-        # Thinking mode & budget
-        enable_thinking = True
-        enable_thinking_budget = True  # Only effective if enable_thinking is True.
-        # Total tokens for thinking + answer. Ensure: max_new_tokens > thinking_budget + 25
-        max_new_tokens = 3072
-        thinking_budget = 2048
         
         # --- B. 图像预处理和 OOM 修复 (显存效率优化) ---
         # 1. 处理批次和 Tensor 到 PIL Image 的转换
@@ -238,7 +232,7 @@ class Ovis25Run:
         input_ids, pixel_values, grid_thws = self.model.preprocess_inputs(
             messages=messages,
             add_generation_prompt=True,
-            enable_thinking=enable_thinking
+            enable_thinking=thinking
         )
         input_ids = input_ids.cuda()
         model_dtype = next(self.model.parameters()).dtype
@@ -252,10 +246,10 @@ class Ovis25Run:
                 inputs=input_ids,
                 pixel_values=pixel_values,
                 grid_thws=grid_thws,
-                enable_thinking=enable_thinking,
-                enable_thinking_budget=enable_thinking_budget,
-                max_new_tokens=max_new_tokens,
-                thinking_budget=thinking_budget,
+                enable_thinking=thinking,
+                enable_thinking_budget=True,# Only effective if enable_thinking is True.
+                max_new_tokens=3072,# Total tokens for thinking + answer. Ensure: max_new_tokens > thinking_budget + 25
+                thinking_budget=2048,
             )
 
         output_text = self.model.text_tokenizer.decode(outputs[0], skip_special_tokens=True)
