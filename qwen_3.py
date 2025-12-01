@@ -301,7 +301,7 @@ class Qwen3CaptionBatch:
     OUTPUT_NODE = True
 
 
-    def batch_caption(self, model_path: str, lang: str, dtype: str, max_side: int, keep_model_loaded: bool, image_path: str, save_path: str = "", instruction: str):
+    def batch_caption(self, model_path: str, lang: str, dtype: str, max_side: int, keep_model_loaded: bool, image_path: str, instruction: str, save_path: str = ""):
         
         count = 0
             
