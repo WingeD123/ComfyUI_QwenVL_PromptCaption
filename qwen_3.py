@@ -88,7 +88,7 @@ def resize_to_limit(image: Image.Image, max_side: int):
     new_width = ceil(width / IMAGE_FACTOR) * IMAGE_FACTOR
     new_height = ceil(height / IMAGE_FACTOR) * IMAGE_FACTOR
 
-    return image.resize((int(new_width), int(new_height)))
+    return image.resize((int(new_width), int(new_height)), resample=Image.BICUBIC)
 
 
 # --- 4. 支持从文件读取提示词 ---
@@ -153,15 +153,18 @@ class Qwen3Caption:
     def INPUT_TYPES(s):
         return {
             "required": {
-                "image": ("IMAGE", ), # ComfyUI 的图像输入 Tensor
+                #"image": ("IMAGE", ), # ComfyUI 的图像输入 Tensor
                 "model_path": (folder_paths.get_filename_list("text_encoders"), ),
-                "lang": (["中文", "English", "bbox"], {"default": "中文"}),
                 "dtype": (["auto", "4bit", "8bit"], {"default": "auto"}), # 强烈建议默认 4bit
                 "keep_model_loaded": ("BOOLEAN", {"default": False}), # 默认保持加载
+                "unload_other_models": ("BOOLEAN", {"default": True}), # 默认卸载其它模型
+                "lang": (["中文", "English", "bbox"], {"default": "中文"}),
                 "max_side": ("INT", {"default": 512, "min": 256, "max": 2240, "step": 32}), # 默认安全尺寸
                 #"instruction": ("STRING", {"multiline": True}),
             },
             "optional": {
+                "image": ("IMAGE", ), # ComfyUI 的图像输入 Tensor
+                "video_fps": ("INT", {"default": 16, "min": 1, "max": 200, "step": 1}), # 默认安全尺寸
                 "instruction": ("STRING", {"multiline": True}),
             }
         }
@@ -172,13 +175,13 @@ class Qwen3Caption:
     OUTPUT_NODE = True
 
 
-    def caption(self, image: torch.Tensor, model_path: str, lang: str, dtype: str, max_side: int, keep_model_loaded: bool, instruction: str):
+    def caption(self, model_path: str, lang: str, dtype: str, max_side: int, keep_model_loaded: bool, unload_other_models: bool, instruction: str = None, video_fps = 16, image: torch.Tensor = None):
         
-        if image is None:
-            return {"ui": {"text": ("no image, 无图像",)}, "result": ("no image, 无图像",)} 
-            
+        if unload_other_models:
+            mm.cleanup_models_gc()
+            mm.unload_all_models()
+        
         model_dir = os.path.dirname(folder_paths.get_full_path_or_raise("text_encoders", model_path))
-        
         # --- A. 模型加载/复用 (时间效率优化) ---
         cache_key = (model_dir, dtype)
         if cache_key not in QWEN_MODEL_CACHE:
@@ -191,12 +194,6 @@ class Qwen3Caption:
         else:
             self.model, self.processor = QWEN_MODEL_CACHE[cache_key]
 
-        # --- B. 图像预处理和 OOM 修复 (显存效率优化) ---
-        # 1. 处理批次和 Tensor 到 PIL Image 的转换
-        image_tensor = image.squeeze(0) # 移除 Batch 维度，形状变为 (H, W, C)
-        pil_image = Image.fromarray((image_tensor.cpu().numpy() * 255).astype(np.uint8))
-        # 2. 强制预缩放
-        pil_image_resized = resize_to_limit(pil_image, max_side)
         # --- C. 构造消息和提示词模板 ---
         #if lang == "English":
         #     text_prompt = "Describe this image in detail. Use English"
@@ -218,25 +215,101 @@ class Qwen3Caption:
                 text_prompt = instruction + "，返回它们的最小边界框坐标列表。结果必须是一个Python列表的列表，即 [[x1, y1, x2, y2], [x3, y3, x4, y4], ...] 格式。坐标要求：所有坐标值必须是整数。坐标是归一化的，范围是0到1000（表示 0% 到 100% 乘以 10）。每个边界框的顺序为：[左上角X, 左上角Y, 右下角X, 右下角Y]。示例输出：[[250, 150, 450, 500], [600, 700, 800, 950]]请仅输出这个列表结构，不包含任何解释性文字或代码块。"
         print(text_prompt)
         
-        messages = [
-            {
-                "role": "user",
-                "content": [
-                    { "type": "image", "image": pil_image_resized }, # 使用缩放后的 PIL Image
-                    { "type": "text", "text": text_prompt },
-                ],
-            }
-        ]
+        # --- B. 图像预处理 ---
+        
+        if image is None:#无图
+            #return {"ui": {"text": ("no image, 无图像",)}, "result": ("no image, 无图像",)} 
+            messages = [
+                {
+                    "role": "user",
+                    "content": [
+                        { "type": "text", "text": text_prompt },
+                    ],
+                }
+            ]
+        elif image.ndim == 4 and image.shape[0] > 1:#多图
+            video_frames_processed = []
+            for i in range(image.shape[0]):
+                # 逐帧转换 (N, H, W, C) -> (H, W, C)
+                pil_frame = Image.fromarray((image[i].cpu().numpy() * 255).astype(np.uint8))
+                # 处理alpha
+                # if pil_frame.mode == 'RGBA':
+                # # 调用 vision_process.py 里的逻辑转为 RGB
+                    # pil_frame = to_rgb(pil_frame) 
+                # elif pil_frame.mode != 'RGB':
+                    # pil_frame = pil_frame.convert('RGB')
+                pil_frame_resized = resize_to_limit(pil_frame, max_side)
+                video_frames_processed.append(pil_frame_resized)
+            messages = [
+                {
+                    "role": "user",
+                    "content": [
+                        { "type": "video", "video": video_frames_processed, "fps": video_fps }, # 使用缩放后的 PIL Image
+                        { "type": "text", "text": text_prompt },
+                    ],
+                }
+            ]
+        else:#单图
+            # 处理维度
+            if image.ndim == 4:
+                image_tensor = image.squeeze(0) # 移除 Batch 维度，形状变为 (H, W, C)
+            else:
+                #what's this?
+                image_tensor = image
+            # 转换
+            pil_image = Image.fromarray((image_tensor.cpu().numpy() * 255).astype(np.uint8))
+            # 处理alpha
+            # if pil_image.mode == 'RGBA':
+                # # 调用 vision_process.py 里的逻辑转为 RGB
+                # pil_image = to_rgb(pil_image) 
+            # elif pil_image.mode != 'RGB':
+                # pil_image = pil_image.convert("RGB")
+            # 2. 强制预缩放
+            pil_image_resized = resize_to_limit(pil_image, max_side)
+            # 构造消息和提示词模板
+            messages = [
+                {
+                    "role": "user",
+                    "content": [
+                        { "type": "image", "image": pil_image_resized }, # 使用缩放后的 PIL Image
+                        { "type": "text", "text": text_prompt },
+                    ],
+                }
+            ]
+        
         # --- D. 预处理、推理和解码 ---
-        inputs = self.processor.apply_chat_template(
-            messages,
-            tokenize=True,
-            add_generation_prompt=True,
-            return_dict=True,
-            return_tensors="pt"
-        )
+        # inputs = self.processor.apply_chat_template(
+            # messages,
+            # tokenize=True,
+            # add_generation_prompt=True,
+            # return_dict=True,
+            # return_tensors="pt"
+        # )
+        text = self.processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
         # 依赖外部 vision_process 导入的函数
-        # image_inputs, video_inputs = process_vision_info(messages)
+        images, videos, video_kwargs = process_vision_info(messages, image_patch_size=16, return_video_kwargs=True, return_video_metadata=True)
+        
+        # split the videos and according metadatas
+        if videos is not None:
+            videos, video_metadatas = zip(*videos)
+            videos, video_metadatas = list(videos), list(video_metadatas)
+            inputs = self.processor(
+                text=text, 
+                images=images, 
+                videos=videos, 
+                video_metadata=video_metadatas, 
+                return_tensors="pt", 
+                do_resize=False, 
+                **video_kwargs
+            )
+        else:   
+            inputs = self.processor(
+                text=text, 
+                images=images, 
+                videos=videos, 
+                do_resize=False, 
+                return_tensors="pt"
+            )
         # inputs = self.processor(
             # text=[text],
             # images=image_inputs,
@@ -264,8 +337,9 @@ class Qwen3Caption:
              if cache_key in QWEN_MODEL_CACHE:
                  del QWEN_MODEL_CACHE[cache_key]
              self.model, self.processor= None, None
+             mm.cleanup_models_gc()
              
-        torch.cuda.empty_cache() # 强制清理 GPU 缓存 (显存优化)
+        # 强制清理 GPU 缓存 (显存优化)
         gc.collect()
         mm.soft_empty_cache()
         
@@ -322,7 +396,7 @@ class Qwen3CaptionBatch:
         # --- A. 模型加载/复用 (时间效率优化) ---
         cache_key = (model_dir, dtype)
         if cache_key not in QWEN_MODEL_CACHE:
-            #print(f"Qwen2.5 VL: 首次加载模型 {model_dir}...")
+            #print(f"Qwen3 VL: 首次加载模型 {model_dir}...")
             try:
                 self.model, self.processor = load_qwen_components(model_dir, dtype)
             except Exception as e:
@@ -364,8 +438,13 @@ class Qwen3CaptionBatch:
             try:
                 # 5.1 读取图片
                 img_path = os.path.join(image_path, img_file)
-                pil_image = Image.open(img_path).convert("RGB")  # 确保RGB格式
-
+                pil_image = Image.open(img_path)
+                # 确保RGB格式
+                if pil_image.mode == 'RGBA':
+                # 调用 vision_process.py 里的逻辑转为 RGB
+                    pil_image = to_rgb(pil_image) 
+                elif pil_image.mode != 'RGB':
+                    pil_image = pil_image.convert('RGB')
                 # 5.2 图像预处理
                 pil_image_resized = resize_to_limit(pil_image, max_side)
 				
@@ -429,8 +508,9 @@ class Qwen3CaptionBatch:
              if cache_key in QWEN_MODEL_CACHE:
                  del QWEN_MODEL_CACHE[cache_key]
              self.model, self.processor= None, None
+             mm.cleanup_models_gc()
              
-        torch.cuda.empty_cache() # 强制清理 GPU 缓存 (显存优化)
+        # 强制清理 GPU 缓存 (显存优化)
         gc.collect()
         mm.soft_empty_cache()
         
