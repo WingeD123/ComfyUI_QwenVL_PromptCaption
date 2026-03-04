@@ -10,15 +10,11 @@ Leverages Qwen 3.5/3/2.5 VL for prompt inversion &amp; caption generation in Com
 ---
 
 ## 节点 | Nodes
-1. Qwen 2.5 VL Caption: Single image prompt inversion  
-   Qwen 2.5 VL Caption：单图提示词反推
-2. Qwen 2.5 VL Batch Caption: Batch image prompt inversion (folder input)  
-   Qwen 2.5 VL Batch Caption：目录批量图片提示词反推
-3. Qwen 3 VL Caption: Single image prompt inversion  
-   Qwen 3 VL Caption：单图提示词反推
-4. Qwen 3 VL Batch Caption: Batch image prompt inversion (folder input)  
-   Qwen 3 VL Batch Caption：目录批量图片提示词反推
-5. Ovis 2.5 Run: Run Ovis 2.5 model  
+1. Qwen XX VL Caption: Single image prompt inversion  
+   Qwen XX VL Caption：单图提示词反推
+2. Qwen XX VL Batch Caption: Batch image prompt inversion (folder input)  
+   Qwen XX VL Batch Caption：目录批量图片提示词反推
+3. Ovis 2.5 Run: Run Ovis 2.5 model  
    Ovis 2.5 Run：运行 Ovis 2.5 模型
 <img width="1294" height="875" alt="nodes1" src="https://github.com/user-attachments/assets/be0e7a0d-906e-4630-b920-72fc7dfe598f" />
 
@@ -31,8 +27,8 @@ b. Manual install:
    手动安装：
    1. Copy the plugin folder to `ComfyUI/custom_nodes/`  
       复制插件目录至 `ComfyUI/custom_nodes/`  
-   2. Update dependency: `transformers>=4.57.0`  
-      更新依赖：`transformers>=4.57.0`
+   2. Update dependency: `transformers>=4.57.0` (>=5.2.0 for Qwen3.5) 
+      更新依赖：`transformers>=4.57.0`（Qwen3.5需>=5.2.0）
 
 ---
 
