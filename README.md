@@ -10,8 +10,8 @@ Leverages Qwen 3.5/3/2.5 VL for prompt inversion &amp; caption generation in Com
 ---
 
 ## 节点 | Nodes
-1. Qwen XX VL Caption: Single image prompt inversion  
-   Qwen XX VL Caption：单图提示词反推
+1. Qwen XX VL Caption: image/video prompt inversion  
+   Qwen XX VL Caption：图片/视频提示词反推
 2. Qwen XX VL Batch Caption: Batch image prompt inversion (folder input)  
    Qwen XX VL Batch Caption：目录批量图片提示词反推
 3. Ovis 2.5 Run: Run Ovis 2.5 model  
