@@ -1,5 +1,5 @@
 # ComfyUI_QwenVL_PromptCaption
-Leverages Qwen 2.5/3 VL for prompt inversion &amp; caption generation in ComfyUI
+Leverages Qwen 3.5/3/2.5 VL for prompt inversion &amp; caption generation in ComfyUI
 
 ---
 
