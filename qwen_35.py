@@ -198,7 +198,7 @@ class Qwen35Caption:
             },
             "optional": {
                 "image": ("IMAGE", ), # ComfyUI 的图像输入 Tensor
-                "video_fps": ("INT", {"default": 16, "min": 1, "max": 200, "step": 1}), # 视频帧率
+                "video_fps": ("FLOAT", {"default": 16, "min": 1, "max": 200, "step": 0.1}), # 视频帧率
                 "instruction": ("STRING", {"multiline": True}),
             }
         }
@@ -496,9 +496,9 @@ class Qwen35CaptionBatch:
         return {
             "required": {
                 "model_path": (folder_paths.get_filename_list("text_encoders"), ),
-                "lang": (["中文", "English"], {"default": "中文"}),
                 "dtype": (["auto", "4bit", "8bit"], {"default": "4bit"}), # 强烈建议默认 4bit
                 "keep_model_loaded": ("BOOLEAN", {"default": False}), # 默认保持加载
+                "lang": (["中文", "English"], {"default": "中文"}),
                 "max_side": ("INT", {"default": 512, "min": 256, "max": 2240, "step": 32}), # 默认安全尺寸
                 "image_path": ("STRING", {"default": ""}),
                 },
