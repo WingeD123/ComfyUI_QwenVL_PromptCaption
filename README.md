@@ -27,7 +27,7 @@ b. Manual install:
    手动安装：
    1. Copy the plugin folder to `ComfyUI/custom_nodes/`  
       复制插件目录至 `ComfyUI/custom_nodes/`  
-   2. Update dependency: `transformers>=4.57.0` (>=5.2.0 for Qwen3.5) 
+   2. Update dependency: `transformers>=4.57.0` (>=5.2.0 for Qwen3.5)  
       更新依赖：`transformers>=4.57.0`（Qwen3.5需>=5.2.0）
 
 ---
