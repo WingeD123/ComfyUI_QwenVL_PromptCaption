@@ -4,7 +4,7 @@ import gc
 from PIL import Image, ImageOps
 from math import ceil
 # 必须使用用户指定的类，并确保 BitsAndBytesConfig 导入
-from transformers import Qwen3_5ForConditionalGeneration, AutoTokenizer, AutoProcessor, BitsAndBytesConfig 
+from transformers import Qwen3_5ForConditionalGeneration, AutoTokenizer, AutoProcessor, BitsAndBytesConfig, set_seed
 # 假设 vision_process 位于同一目录或可导入
 from .vision_process import process_vision_info, to_rgb
 import comfy.model_management as mm
@@ -193,6 +193,7 @@ class Qwen35Caption:
                 "unload_other_models": ("BOOLEAN", {"default": True}), # 默认卸载其它模型
                 "thinking": ("BOOLEAN", {"default": False}), # enable_thinking
                 "lang": (["中文", "English", "bbox"], {"default": "中文"}),
+                "seed": ("INT", {"default": 1, "min": 0, "max": 0xffffffffffffffff}),
                 "max_side": ("INT", {"default": 512, "min": 256, "max": 2240, "step": 32}), # 默认安全尺寸
                 #"instruction": ("STRING", {"multiline": True}),
             },
@@ -209,12 +210,14 @@ class Qwen35Caption:
     OUTPUT_NODE = True
 
 
-    def caption(self, model_path: str, lang: str, dtype: str, max_side: int, keep_model_loaded: bool, unload_other_models: bool, thinking: bool, instruction: str = None, video_fps = 16, image: torch.Tensor = None):
+    def caption(self, model_path: str, lang: str, dtype: str, max_side: int, keep_model_loaded: bool, unload_other_models: bool, thinking: bool, seed: int, instruction: str = None, video_fps = 16, image: torch.Tensor = None):
         
         if unload_other_models:
             mm.cleanup_models_gc()
             mm.unload_all_models()
-
+        
+        set_seed(seed)
+        
         # --- C. 构造消息和提示词模板 ---
         #if lang == "English":
         #     text_prompt = "Describe this image in detail. Use English"
@@ -242,7 +245,7 @@ class Qwen35Caption:
         
         if image is None:#无图
             #return {"ui": {"text": ("no image, 无图像",)}, "result": ("no image, 无图像", "no image, 无图像")} 
-            result_key = (model_dir, dtype, text_prompt+str(thinking), "none")
+            result_key = (model_dir, dtype, text_prompt+str(thinking)+str(seed), "none")
             if result_key in QWEN_RESULT_CACHE:
                 self.model, self.processor = None, None
                 # --- 显存清理 ---
@@ -266,7 +269,7 @@ class Qwen35Caption:
         elif image.ndim == 4 and image.shape[0] > 1:#多图
             #pil_image_1 = Image.fromarray((image[0].cpu().numpy() * 255).round().clip(0, 255).astype(np.uint8))
             pil_image_mid = Image.fromarray((image[image.shape[0]//2].cpu().numpy() * 255).round().clip(0, 255).astype(np.uint8))
-            result_key = (model_dir, dtype, text_prompt+str(thinking), get_image_hash(pil_image_mid)+str(image.shape[0])+str(video_fps)+str(max_side))
+            result_key = (model_dir, dtype, text_prompt+str(thinking)+str(seed), get_image_hash(pil_image_mid)+str(image.shape[0])+str(video_fps)+str(max_side))
             if result_key in QWEN_RESULT_CACHE:
                 self.model, self.processor = None, None
                 # --- 显存清理 ---
@@ -310,7 +313,7 @@ class Qwen35Caption:
             # 转换
             pil_image = Image.fromarray((image_tensor.cpu().numpy() * 255).round().clip(0, 255).astype(np.uint8))
             
-            result_key = (model_dir, dtype, text_prompt+str(thinking), get_image_hash(pil_image)+str(max_side))
+            result_key = (model_dir, dtype, text_prompt+str(thinking)+str(seed), get_image_hash(pil_image)+str(max_side))
             if result_key in QWEN_RESULT_CACHE:
                 self.model, self.processor = None, None
                 # --- 显存清理 ---
