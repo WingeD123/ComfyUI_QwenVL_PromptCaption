@@ -217,7 +217,6 @@ class Qwen35Caption:
             mm.unload_all_models()
         
         set_seed(seed)
-        print(seed)
         
         # --- C. 构造消息和提示词模板 ---
         #if lang == "English":
@@ -696,3 +695,4 @@ class Qwen35CaptionBatch:
             stats = f"{count} image captioned, 共处理{count}张图片"
 
         return {"ui": {"text": (stats,)}, "result": (stats,)}
+
