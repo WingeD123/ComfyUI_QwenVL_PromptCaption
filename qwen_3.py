@@ -78,7 +78,7 @@ def load_qwen_components(model_dir: str, dtype: str):
 
 # --- 3. 图像处理函数 ---
 def resize_to_limit(image: Image.Image, max_side: int):
-    """强制将图像最大边长缩放到指定限制，并确保是 Qwen 所需的 32 的倍数。"""
+    """强制将图像最大边长缩放到指定限制，并确保是 Qwen3 所需的 32 的倍数。"""
     width, height = image.size
     
     # 仅当超过限制时才进行缩放
@@ -178,7 +178,7 @@ class Qwen3Caption:
                 "keep_model_loaded": ("BOOLEAN", {"default": False}), # 默认保持加载
                 "unload_other_models": ("BOOLEAN", {"default": True}), # 默认卸载其它模型
                 "lang": (["中文", "English", "bbox"], {"default": "中文"}),
-                "seed": ("INT", {"default": 1, "min": 0, "max": 0xffffffffffffffff}),
+                "seed": ("INT", {"default": 1, "min": 0, "max": 0xffffffff}),
                 "max_side": ("INT", {"default": 512, "min": 256, "max": 2240, "step": 32}), # 默认安全尺寸
                 #"instruction": ("STRING", {"multiline": True}),
             },
