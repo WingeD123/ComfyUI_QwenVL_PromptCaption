@@ -391,6 +391,32 @@ class Qwen3Caption:
         # )
         inputs = inputs.to(self.model.device)
         #inputs = inputs.to("cuda")
+        
+        QWEN3_PRESETS = {
+            "VL_No_Think": {
+                "temperature": 0.7, "top_p": 0.8, "top_k": 20, 
+                "repetition_penalty": 1.0#"min_p": 0.0,, "presence_penalty": 1.5
+            },
+            "VL_Think": {
+                "temperature": 1.0, "top_p": 0.95, "top_k": 20, 
+                "repetition_penalty": 1.0#"min_p": 0.0,, "presence_penalty": 0.0
+            },
+            "Text_No_Think": {
+                "temperature": 1.0, "top_p": 1.0, "top_k": 40, 
+                "repetition_penalty": 1.0#"min_p": 0.0,  "presence_penalty": 2.0
+            },
+            "Text_Think": {
+                "temperature": 1.0, "top_p": 0.95, "top_k": 20, 
+                "repetition_penalty": 1.0#"min_p": 0.0,  "presence_penalty": 1.5
+            }
+        }
+        preset_key = ""
+        if image is not None:
+            preset_key = "VL_No_Think"
+        else:
+            preset_key = "Text_No_Think"
+        params = QWEN3_PRESETS[preset_key]
+        
         with torch.no_grad():
             generated_ids = self.model.generate(
             **inputs, 

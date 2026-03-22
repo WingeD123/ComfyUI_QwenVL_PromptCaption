@@ -418,7 +418,7 @@ class Qwen35Caption:
         
         QWEN35_PRESETS = {
             "VL_No_Think": {
-                "temperature": 0.7, "top_p": 0.80, "top_k": 20, 
+                "temperature": 0.7, "top_p": 0.8, "top_k": 20, 
                 "min_p": 0.0, "repetition_penalty": 1.0#, "presence_penalty": 1.5
             },
             "VL_Think": {
@@ -426,7 +426,7 @@ class Qwen35Caption:
                 "min_p": 0.0, "repetition_penalty": 1.0#, "presence_penalty": 0.0
             },
             "Text_No_Think": {
-                "temperature": 1.0, "top_p": 1.00, "top_k": 20, 
+                "temperature": 1.0, "top_p": 1.0, "top_k": 40, 
                 "min_p": 0.0, "repetition_penalty": 1.0#, "presence_penalty": 2.0
             },
             "Text_Think": {
@@ -695,4 +695,3 @@ class Qwen35CaptionBatch:
             stats = f"{count} image captioned, 共处理{count}张图片"
 
         return {"ui": {"text": (stats,)}, "result": (stats,)}
-
