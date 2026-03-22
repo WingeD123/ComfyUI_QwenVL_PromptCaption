@@ -24,7 +24,7 @@ app.registerExtension({
 				"Qwen35Caption": "caption_result_3.5",
 			    "Qwen35CaptionBatch": "batch_summary_3.5",
 				"Ovis25Run": "ovis_result_2.5",
-				"ASID_Caption": "asid_result",
+				"ASID_Caption": "asid_result"
 			};
 			// 使用查找表，如果找不到匹配项，则默认值为 ""
 			const widgetName = nameMap[nodeData.name] || "";
