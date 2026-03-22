@@ -16,6 +16,8 @@ Leverages Qwen 3.5/3/2.5 VL for prompt inversion &amp; caption generation in Com
    Qwen XX VL Batch Caption：目录批量图片提示词反推
 3. Ovis 2.5 Run: Run Ovis 2.5 model  
    Ovis 2.5 Run：运行 Ovis 2.5 模型
+4. ASID_Caption: Run ASID Captioner model  
+   ASID_Caption：运行 ASID Captioner 模型
 <img width="1294" height="875" alt="nodes1" src="https://github.com/user-attachments/assets/be0e7a0d-906e-4630-b920-72fc7dfe598f" />
 
 ---
@@ -81,6 +83,13 @@ Support Ovis 2.5 models
 https://huggingface.co/AIDC-AI/Ovis2.5-2B
 
 https://huggingface.co/AIDC-AI/Ovis2.5-9B
+
+Support ASID Captioner models  
+新支持 ASID Captioner 模型
+
+https://huggingface.co/AudioVisual-Caption/ASID-Captioner-3B
+
+https://huggingface.co/AudioVisual-Caption/ASID-Captioner-7B
 
 ---
 
