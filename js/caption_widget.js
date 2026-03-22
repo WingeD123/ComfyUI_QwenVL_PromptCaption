@@ -8,7 +8,7 @@ app.registerExtension({
 	
 	async beforeRegisterNodeDef(nodeType, nodeData, app) {
 		// 1. 识别您的目标节点名称
-		const TARGET_NODES = ["Qwen25Caption", "Qwen25CaptionBatch", "Qwen3Caption", "Qwen3CaptionBatch", "Qwen35Caption", "Qwen35CaptionBatch", "Ovis25Run"];
+		const TARGET_NODES = ["Qwen25Caption", "Qwen25CaptionBatch", "Qwen3Caption", "Qwen3CaptionBatch", "Qwen35Caption", "Qwen35CaptionBatch", "Ovis25Run", "ASID_Caption"];
 		if (TARGET_NODES.includes(nodeData.name)) {
 			
 			const onExecuted = nodeType.prototype.onExecuted;
@@ -23,7 +23,8 @@ app.registerExtension({
 			    "Qwen3CaptionBatch": "batch_summary_3",
 				"Qwen35Caption": "caption_result_3.5",
 			    "Qwen35CaptionBatch": "batch_summary_3.5",
-				"Ovis25Run": "ovis_result_2.5"
+				"Ovis25Run": "ovis_result_2.5",
+				"ASID_Caption": "asid_result",
 			};
 			// 使用查找表，如果找不到匹配项，则默认值为 ""
 			const widgetName = nameMap[nodeData.name] || "";
