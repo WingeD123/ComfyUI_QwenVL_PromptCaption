@@ -211,7 +211,7 @@ class ASID_Caption:
                 "keep_model_loaded": ("BOOLEAN", {"default": False}), # 默认保持加载
                 "unload_other_models": ("BOOLEAN", {"default": True}), # 默认卸载其它模型
                 "lang": (["中文", "English"], {"default": "中文"}),
-                "seed": ("INT", {"default": 1, "min": 0, "max": 0xffffffff}),
+                #"seed": ("INT", {"default": 1, "min": 0, "max": 0xffffffff}),
                 "video_path": ("STRING", {"multiline": False}),
                 "use_audio": ("BOOLEAN", {"default": True}), # 是否使用视频中的音频，无音频时选True可能会报错
                 "max_side": ("INT", {"default": 504, "min": 252, "max": 2240, "step": 28}), # 默认安全尺寸
@@ -231,13 +231,13 @@ class ASID_Caption:
     OUTPUT_NODE = True
 
 
-    def caption(self, model_path: str, lang: str, dtype: str, max_side: int, keep_model_loaded: bool, unload_other_models: bool, seed: int, video_path: str, use_audio: bool, instruction: str = None):
+    def caption(self, model_path: str, lang: str, dtype: str, max_side: int, keep_model_loaded: bool, unload_other_models: bool, video_path: str, use_audio: bool, instruction: str = None):
         
         if unload_other_models:
             mm.cleanup_models_gc()
             mm.unload_all_models()
         
-        set_seed(seed)
+        #set_seed(seed)
         
         VIDEO_MAX_PIXELS = 401408        # 512*28*28
         VIDEO_TOTAL_PIXELS = 20070400    # 512*28*28*50
@@ -266,7 +266,7 @@ class ASID_Caption:
         
         model_dir = os.path.dirname(folder_paths.get_full_path_or_raise("text_encoders", model_path))
         
-        result_key = (model_dir, dtype, text_prompt+str(seed), video_path+str(max_side))
+        result_key = (model_dir, dtype, text_prompt, video_path+str(max_side)+str(use_audio))
         
         if result_key in QWEN_RESULT_CACHE:
             self.model, self.processor = None, None
