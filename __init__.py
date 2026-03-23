@@ -32,7 +32,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "StringToBbox": "String to BBOX",
     "StringToSam3Box": "String to SAM3 Box",
     "Ovis25Run": "Ovis2.5 Run",
-    "ASID_Caption": "ASID Captioner (Inverse Prompt)",
+    "ASID_Caption": "ASID Captioner (Video Inverse Prompt)",
     "Qwen35Caption": "Qwen3.5 VL Caption (Inverse Prompt)",
     "Qwen35CaptionBatch": "Qwen3.5 VL Batch Caption",
 }
