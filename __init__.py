@@ -1,7 +1,7 @@
 from .qwen_25 import Qwen25Caption, Qwen25CaptionBatch
 from .qwen_3 import Qwen3Caption, Qwen3CaptionBatch
 from .qwen_35 import Qwen35Caption, Qwen35CaptionBatch
-from .string_to_bbox import StringToBbox, StringToSam3Box
+from .string_to_bbox import StringToBbox, StringToComfyBbox, StringToSam3Box
 from .ovis_25 import Ovis25Run
 from .asid_captioner import ASID_Caption
 
@@ -17,7 +17,8 @@ NODE_CLASS_MAPPINGS = {
     "Qwen3Caption": Qwen3Caption,
     "Qwen3CaptionBatch": Qwen3CaptionBatch,
     "StringToBbox": StringToBbox,
-    "StringToSam3Box": StringToSam3Box,
+    #"StringToSam3Box": StringToSam3Box,
+    "StringToComfyBbox": StringToComfyBbox,
     "Ovis25Run": Ovis25Run,
     "ASID_Caption": ASID_Caption,
     "Qwen35Caption": Qwen35Caption,
@@ -30,7 +31,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "Qwen3Caption": "Qwen3 VL Caption (Inverse Prompt)",
     "Qwen3CaptionBatch": "Qwen3 VL Batch Caption",
     "StringToBbox": "String to BBOX",
-    "StringToSam3Box": "String to SAM3 Box",
+    #"StringToSam3Box": "String to SAM3 Box",
+    "StringToComfyBbox": "String to ComfyUI BBOX",
     "Ovis25Run": "Ovis2.5 Run",
     "ASID_Caption": "ASID Captioner (Video Inverse Prompt)",
     "Qwen35Caption": "Qwen3.5 VL Caption (Inverse Prompt)",
