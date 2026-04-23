@@ -2,7 +2,7 @@
 [project]
 name = "ComfyUI_QwenVL_PromptCaption" # Unique identifier for your node. Immutable after creation.
 description = "Leverages Qwen 3.5/3/2.5 VL for prompt inversion & caption generation. No auto-download models(不会自动下载模型), see GitHub for how to use(GitHub有详细说明)."
-version = "1.1.0" # Custom Node version. Must be semantically versioned.
+version = "1.1.1" # Custom Node version. Must be semantically versioned.
 license = { file = "LICENSE" }
 dependencies  = ["transformers>=5.2.0", "accelerate", "peft>=0.18.0", "bitsandbytes>=0.48.0", "librosa", "imageio-ffmpeg"] # Filled in from requirements.txt
 
