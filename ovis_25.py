@@ -100,7 +100,7 @@ def resize_to_limit(image: Image.Image, max_side: int):
     new_width = ceil(width / IMAGE_FACTOR) * IMAGE_FACTOR
     new_height = ceil(height / IMAGE_FACTOR) * IMAGE_FACTOR
 
-    return image.resize((int(new_width), int(new_height)))
+    return image.resize((int(new_width), int(new_height)), resample=Image.LANCZOS)
 
 
 # --- 4. 支持从文件读取提示词 ---
