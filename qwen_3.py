@@ -93,7 +93,7 @@ def resize_to_limit(image: Image.Image, max_side: int):
     new_width = ceil(width / IMAGE_FACTOR) * IMAGE_FACTOR
     new_height = ceil(height / IMAGE_FACTOR) * IMAGE_FACTOR
 
-    return image.resize((int(new_width), int(new_height)), resample=Image.BICUBIC)
+    return image.resize((int(new_width), int(new_height)), resample=Image.LANCZOS)
 
 def get_image_hash(pil_img: Image.Image):
     if pil_img is None:
